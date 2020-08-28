@@ -10,15 +10,22 @@ var form = d3.select("form");
 // to append table in html
 var tbody = d3.select("tbody");
 
-var columns = ["datetime", "city", "state", "country", "shape", "durationMinutes", "comments"]
-
-// Input the data into the HTML
-var table = (dataInput) => {
-    dataInput.forEach(ufoSighting => {
-        var row = tbody.append("tr");
-        columns.forEach(column => row.append("td").text(ufoSighting[column])
-        )
+tableData.forEach((ufoinfo) => {
+    var row = tbody.append('tr');
+    Object.entries(ufoinfo).forEach(([key, value]) => {
+        var cell = row.append('td').text(value);
     });
+});
+
+function filterData(data, key, input) {
+    if(input !== "") {
+        return data.filter(function(ufosighting) {
+            if (ufosighting[key] === input) {
+                return true;
+            }
+        });
+    }
+    return data;
 }
 
 // Complete the event handler function for the form
@@ -34,27 +41,24 @@ function runEnter() {
     var inputCountryValue = d3.select("#country").property("value").toLowerCase();
     var inputShapeValue = d3.select("#shape").property("value").toLowerCase();
 
-    console.log("Date: " + inputDateValue +"City: " +inputCityValue +"State: " + inputStateValue +"Country: "+ inputCountryValue);
-    console.log(tableData);
+    filteredData = tableData;
 
-
-    var filteredData = tableData.filter(tableData => tableData.datetime === inputDateValue && tableData.city === inputCityValue && tableData.state === inputStateValue && tableData.country === inputCountryValue);
-
-    console.log(filteredData);
-
+    filteredData = filterData(filteredData, 'datetime', inputDateValue);
+    filteredData = filterData(filteredData, 'city', inputCityValue);
+    filteredData = filterData(filteredData, 'state', inputStateValue);
+    filteredData = filterData(filteredData, 'country', inputCountryValue);
+    filteredData = filterData(filteredData, 'shape', inputShapeValue);
     // remove info from table
     tbody.html("");
 
     filteredData.forEach((ufoinfo) => {
-        var row = tbody.append("tr");
+        var row = tbody.append('tr');
         Object.entries(ufoinfo).forEach(([key, value]) => {
-            var cell = row.append("td").text(value);
+            var cell = row.append('td').text(value);
         });
     });
 
-
 };
 
-// Create event handlers
 button.on("click", runEnter);
 form.on("submit",runEnter);
