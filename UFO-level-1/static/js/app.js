@@ -10,6 +10,13 @@ var form = d3.select("form");
 // to append table in html
 var tbody = d3.select("tbody");
 
+tableData.forEach((ufoinfo) => {
+    var row = tbody.append('tr');
+    Object.entries(ufoinfo).forEach(([key, value]) => {
+        var cell = row.append('td').text(value);
+    });
+});
+
 // Complete the event handler function for the form
 function runEnter() {
 
